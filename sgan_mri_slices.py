@@ -35,8 +35,8 @@ with warnings.catch_warnings():
     ###LOAD IMAGES###
     #################
 
-    #load 10 images
-    imgs, fails = load_and_resample(ref_img, list(q_selection.loc[q_selection.index[0:10], "scans"]))
+    #load 100 images
+    imgs, fails = load_and_resample(ref_img, list(q_selection.loc[q_selection.index[0:100], "scans"]))
 
     ##################
     ###SLICE IMAGES###
@@ -49,4 +49,9 @@ with warnings.catch_warnings():
 
     imgs_sliced, subject_idx = slicing(imgs=imgs, n_slices=5)
 
-    
+    ###############
+    ###SAVE DATA###
+    ###############
+
+    np.save("img_data.npy", imgs_sliced)
+    np.save("subject_idx.npy", subject_idx)
