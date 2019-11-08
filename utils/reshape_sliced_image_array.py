@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import warnings
-from load_and_resample import load_and_resample
+from utils.load_and_resample import load_and_resample
 from matplotlib import pyplot as plt
 
 #suppress Deprecation Warnings
@@ -66,4 +66,3 @@ plt.savefig("after_reslicing2.png")
 
 #If we would swap the subject and slice axes, would we get all 5 slices of subject 1 for the first five entries, then
 #all 5 slices of subject two for the second 5 entries and so on?
-
