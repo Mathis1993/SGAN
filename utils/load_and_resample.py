@@ -47,7 +47,7 @@ with warnings.catch_warnings():
         img_data = np.expand_dims(img_data, axis=3)
         #Starting the loop from the image coming after the first one that could be loaded
         succ = 1
-        for j in range(imgs[i+1:]):
+        for j in range(i+1,len(imgs)):
             try:
                 cur_img = load_img(imgs[j])
                 if cur_img.shape != ref_shape:
@@ -57,7 +57,7 @@ with warnings.catch_warnings():
                 cur_img = np.expand_dims(cur_img, axis=3)
                 #concatenate to previous image(s)
                 img_data = np.concatenate((img_data, cur_img), axis=3)
-                idx_loaded.append(j)
+                idx_loaded.append(j+i)
                 succ += 1
             except:
                 fails.append(imgs[j])
