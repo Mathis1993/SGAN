@@ -36,7 +36,13 @@ with warnings.catch_warnings():
     #################
 
     #load 100 images
-    imgs, fails = load_and_resample(ref_img, list(q_selection.loc[q_selection.index[0:100], "scans"]))
+    imgs, fails, idx_loaded = load_and_resample(ref_img, list(q_selection.loc[q_selection.index[0:100], "scans"]))
+
+    ###################################
+    ###GET TARGETS FOR LOADED IMAGES###
+    ###################################
+
+    targets = list(q_selection.loc[q_selection.index[idx_loaded], "age"])
 
     ##################
     ###SLICE IMAGES###
@@ -47,7 +53,11 @@ with warnings.catch_warnings():
     #(slicing function expects this at the moment)
     imgs = np.swapaxes(imgs,1,2)
 
-    imgs_sliced, subject_idx = slicing(imgs=imgs, n_slices=5)
+    n_slices = 5
+    imgs_sliced, subject_idx = slicing(imgs=imgs, n_slices=n_slices)
+
+    #update targets: Each slice has a corresponding age
+    targets = np.array([target for target in targets] * n_slices)
 
     ###############
     ###SAVE DATA###
@@ -55,3 +65,4 @@ with warnings.catch_warnings():
 
     np.save("img_data.npy", imgs_sliced)
     np.save("subject_idx.npy", subject_idx)
+    np.save("targets.npy", targets)
