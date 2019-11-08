@@ -25,6 +25,7 @@ q_selection = q.loc[:, ["MS_ID", "research_diagnosis", "scans", "age"]]
 #X, _, _ = mask.transform(X)
 
 #NILEARN
+#throws error
 for path in scans[0:2]:
     print(path)
 img = check_niimg(scans[0:2], atleast_4d=True)
