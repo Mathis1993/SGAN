@@ -14,6 +14,7 @@ with warnings.catch_warnings():
         :param imgs: (List) Paths to all images (including the reference image)
         :return: - Numpy array with all images that could be loaded of shape (target dimensions plus list dimension)
                  - List of paths for which loading failed
+                 - Indices of imgs-list (first param) that could be loaded to be able to match targets to them
         """
         #load reference image to which dimensions all other images will be resampled
         ref_img = load_img(ref_img)
@@ -34,7 +35,9 @@ with warnings.catch_warnings():
 
         #Right now, only able to load one image after another (see read_multiple_niftis.py)
         #Load first one
+        idx_loaded = list()
         first_img = load_img(imgs[i])
+        idx_loaded.append(i)
         #if necessary, resample to reference dimensions
         if first_img.shape != ref_shape:
             first_img = resample_to_img(source_img=first_img, target_img=ref_img, interpolation='nearest')
@@ -54,12 +57,14 @@ with warnings.catch_warnings():
                 cur_img = np.expand_dims(cur_img, axis=3)
                 #concatenate to previous image(s)
                 img_data = np.concatenate((img_data, cur_img), axis=3)
+                i  += 1
+                idx_loaded.append(i)
                 succ += 1
             except:
                 fails.append(img)
         #How many successful loads, how many fails?
         print("Successfully loaded {}/{} images, failed to load {}/{} images".format(succ, len(imgs), len(fails), len(imgs)))
-        return(img_data, fails)
+        return(img_data, fails, idx_loaded)
 
 
 
