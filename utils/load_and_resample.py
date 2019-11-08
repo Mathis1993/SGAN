@@ -47,9 +47,9 @@ with warnings.catch_warnings():
         img_data = np.expand_dims(img_data, axis=3)
         #Starting the loop from the image coming after the first one that could be loaded
         succ = 1
-        for img in imgs[i+1:]:
+        for j in range(imgs[i+1:]):
             try:
-                cur_img = load_img(img)
+                cur_img = load_img(imgs[j])
                 if cur_img.shape != ref_shape:
                     cur_img = resample_to_img(source_img=cur_img, target_img=ref_img, interpolation='nearest')
                 cur_img = cur_img.get_data()
@@ -57,11 +57,10 @@ with warnings.catch_warnings():
                 cur_img = np.expand_dims(cur_img, axis=3)
                 #concatenate to previous image(s)
                 img_data = np.concatenate((img_data, cur_img), axis=3)
-                i  += 1
-                idx_loaded.append(i)
+                idx_loaded.append(j)
                 succ += 1
             except:
-                fails.append(img)
+                fails.append(imgs[j])
         #How many successful loads, how many fails?
         print("Successfully loaded {}/{} images, failed to load {}/{} images".format(succ, len(imgs), len(fails), len(imgs)))
         return(img_data, fails, idx_loaded)
