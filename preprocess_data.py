@@ -1,8 +1,7 @@
 import pandas as pd
 import numpy as np
 import warnings
-from utils.load_and_resample import load_and_resample
-from utils.slicing import slicing
+from utils.preprocessing import load_and_resample, slice
 
 #suppress Deprecation Warnings
 with warnings.catch_warnings():
@@ -36,7 +35,12 @@ with warnings.catch_warnings():
     #################
 
     #load 100 images
-    imgs, fails, idx_loaded = load_and_resample(ref_img, list(q_selection.loc[q_selection.index[0:100], "scans"]))
+    #imgs, fails, idx_loaded = load_and_resample(ref_img, list(q_selection.loc[q_selection.index[0:100], "scans"]))
+
+    print("Starting to load images")
+
+    #load all images
+    imgs, fails, idx_loaded = load_and_resample(ref_img, list(q_selection.loc[q_selection.index, "scans"]))
 
     ###################################
     ###GET TARGETS FOR LOADED IMAGES###
@@ -53,8 +57,8 @@ with warnings.catch_warnings():
     #(slicing function expects this at the moment)
     imgs = np.swapaxes(imgs,1,2)
 
-    n_slices = 5
-    imgs_sliced, subject_idx = slicing(imgs=imgs, n_slices=n_slices)
+    n_slices = 10
+    imgs_sliced, subject_idx = slice(imgs=imgs, n_slices=n_slices)
 
     #update targets: Each slice has a corresponding age
     targets = np.array([target for target in targets] * n_slices)
@@ -63,6 +67,6 @@ with warnings.catch_warnings():
     ###SAVE DATA###
     ###############
 
-    np.save("img_data.npy", imgs_sliced)
-    np.save("subject_idx.npy", subject_idx)
-    np.save("targets.npy", targets)
+    np.save("data_mri/img_data.npy", imgs_sliced)
+    np.save("data_mri/subject_idx.npy", subject_idx)
+    np.save("data_mri/targets.npy", targets)
