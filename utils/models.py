@@ -3,6 +3,9 @@ import pandas as pd
 import numpy as np
 from keras.models import load_model
 
+#GPU IMPORT
+#from tensorflow.keras.models import load_model
+
 #res_dir = "Run1_20-11-2019_16-20-17"
 
 def search_files(dir, term="c_model"):
