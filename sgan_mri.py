@@ -308,10 +308,10 @@ def run_cv(dataset, targets, subject_idx, n_folds, name):
     for j, (train_idx, val_idx) in enumerate(folds):
         #print("TRAIN:", train_idx, "VAL:", val_idx)
         #select current data
-        train_dataset = dataset_cv[train_idx]
-        train_targets = targets_cv[train_idx]
-        val_dataset = dataset_cv[val_idx]
-        val_targets = targets_cv[val_idx]
+        train_dataset = dataset[train_idx]
+        train_targets = targets[train_idx]
+        val_dataset = dataset[val_idx]
+        val_targets = targets[val_idx]
         #model instantiation
         # create the discriminator models
         d_model, c_model = define_discriminator()
