@@ -251,7 +251,7 @@ def train(fold, res_dir, g_model, d_model, c_model, gan_model, train_dataset, tr
     X_sup, y_sup, ix_sup = select_samples(train_dataset, train_targets, n_samples=n_batch)
     print("Supvervised Samples' Shape: {}, Supervised Targets' Shape: {}".format(X_sup.shape, y_sup.shape))
     # calculate the number of batches per training epoch
-    bat_per_epo = int(dataset.shape[0] / n_batch) #round up?
+    bat_per_epo = int(train_dataset.shape[0] / n_batch) #round up?
     # calculate the number of training iterations
     n_steps = bat_per_epo * n_epochs
     # calculate the size of half a batch of samples
