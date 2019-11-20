@@ -22,7 +22,7 @@ def mean_model(res_dir, dataset_test, targets_test):
         cur_model = load_model(file)
         _, metric = cur_model.evaluate(dataset_test, targets_test, verbose=0)
         metrics.append(metric)
-    print("Mean metric of best models over folds: {:.3f}".format(np.mean(metrics)))
+    print("Mean metric of best models over folds on test set: {:.3f}".format(np.mean(metrics)))
 
 
 def best_model(res_dir, dataset_test, targets_test):
@@ -31,7 +31,7 @@ def best_model(res_dir, dataset_test, targets_test):
     min_fold = best_val.loc[best_val.iloc[:,1]==np.min(best_val.iloc[:,1]) , 0].iloc[0]
     best_model = load_model(res_dir + "/" + "fold_" + str(min_fold) + "/" + "c_model_fold_" + str(min_fold) + ".h5")
     _, metric = best_model.evaluate(dataset_test, targets_test, verbose=0)
-    print("Metric of best model (fold {}): {:.3f}".format(min_fold, metric))
+    print("Metric of best model on test set (fold {}): {:.3f}".format(min_fold, metric))
     return best_model
 
 
