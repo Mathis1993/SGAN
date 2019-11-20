@@ -51,9 +51,9 @@ dataset = (dataset - ((np.min(dataset) + np.max(dataset)) / 2)) / ((np.min(datas
 
 #ToDo: Delete later, only for testing
 #select only small amount of samples
-dataset = dataset[:200]
-targets = targets[:200]
-subject_idx = subject_idx[:200]
+# dataset = dataset[:200]
+# targets = targets[:200]
+# subject_idx = subject_idx[:200]
 
 
 ###############

@@ -95,6 +95,6 @@ def run_cv(dataset, targets, subject_idx, n_folds, name, latent_dim):
         # create the gan
         gan_model = define_gan(g_model, d_model)
         # train models
-        c_model_trained, d_model_trained, g_model_trained = train(fold, dir_name, g_model, d_model, c_model, gan_model, train_dataset, train_targets, val_dataset, val_targets, latent_dim, n_epochs=10, n_batch=100)
+        c_model_trained, d_model_trained, g_model_trained = train(fold, dir_name, g_model, d_model, c_model, gan_model, train_dataset, train_targets, val_dataset, val_targets, latent_dim, n_epochs=100, n_batch=100)
         fold+=1
     return(c_model_trained, d_model_trained, g_model_trained, dir_name)
