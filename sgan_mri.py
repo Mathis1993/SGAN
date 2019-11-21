@@ -72,9 +72,15 @@ dataset_cv, targets_cv, subject_idx_cv, dataset_test, targets_test = split_data(
 # size of the latent space
 latent_dim = 100
 #name of the run
-name = "Run1"
+name = "Test1"
 #number of folds
 n_folds = 10
+#number of epochs
+n_epochs = 100
+#learning rate
+lr = 0.0002
+#batch size: This also determines the amount of labeled data
+n_batch = 100
 
 
 ######################
@@ -82,7 +88,7 @@ n_folds = 10
 ######################
 
 #train the model using cross validation
-c_model_trained, d_model_trained, g_model_trained, res_dir = run_cv(dataset_cv, targets_cv, subject_idx_cv, n_folds, name="Run1", latent_dim=latent_dim)
+c_model_trained, d_model_trained, g_model_trained, res_dir = run_cv(dataset, targets, subject_idx, n_folds, lr=lr, n_batch=n_batch, n_epochs=n_epochs, name=name, latent_dim=latent_dim)
 
 
 ############################

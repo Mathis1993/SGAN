@@ -9,7 +9,7 @@ import numpy as np
 # define the separate supervised and unsupervised discriminator models with shared weights:
 # The models share all feature extraction layers, but one outputs one probability (so classification in real/fake image)
 # and one outputs age predictions (1 output node and mse loss)
-def define_discriminator(in_shape=(64,64,1)):
+def define_discriminator(lr, in_shape=(64,64,1)):
     # image input
     in_image = Input(shape=in_shape)
     # downsample
@@ -29,12 +29,12 @@ def define_discriminator(in_shape=(64,64,1)):
     d_out_layer = Dense(1, activation='sigmoid')(fe)
     # define and compile unsupervised discriminator model
     d_model = Model(in_image, d_out_layer)
-    d_model.compile(loss='binary_crossentropy', optimizer=Adam(lr=0.0002, beta_1=0.5))
+    d_model.compile(loss='binary_crossentropy', optimizer=Adam(lr=lr, beta_1=0.5))
     # supervised output
     c_out_layer = Dense(1, activation='linear')(fe)
     # define and compile supervised discriminator model
     c_model = Model(in_image, c_out_layer)
-    c_model.compile(loss='mean_squared_error', optimizer=Adam(lr=0.0002, beta_1=0.5), metrics=['mae'])
+    c_model.compile(loss='mean_squared_error', optimizer=Adam(lr=lr, beta_1=0.5), metrics=['mae'])
     return d_model, c_model
 
 # define the standalone generator model: A vector of points from latent space (eg 100 numbers drawn from the normal
@@ -78,7 +78,7 @@ def define_generator(latent_dim):
 # The parameter update only applies to the weights/biases of the generator, as we marked the weights of
 # the fake/real-generator as not trainable inside this function (does not affect training the fake/real-discriminator
 # when training it from it's standalone model).
-def define_gan(g_model, d_model):
+def define_gan(g_model, d_model, lr):
     # make weights in the discriminator not trainable
     d_model.trainable = False
     # connect image output from generator as input to discriminator
@@ -86,7 +86,7 @@ def define_gan(g_model, d_model):
     # define gan model as taking noise and outputting a classification
     model = Model(g_model.input, gan_output)
     # compile model
-    opt = Adam(lr=0.0002, beta_1=0.5)
+    opt = Adam(lr=lr, beta_1=0.5)
     model.compile(loss='binary_crossentropy', optimizer=opt)
     return model
 

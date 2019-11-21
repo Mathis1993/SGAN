@@ -58,7 +58,7 @@ def train(fold, res_dir, g_model, d_model, c_model, gan_model, train_dataset, tr
     return c_model, d_model, g_model
 
 
-def run_cv(dataset, targets, subject_idx, n_folds, name, latent_dim):
+def run_cv(dataset, targets, subject_idx, n_folds, lr=0.0002, n_batch=100, n_epochs=100, name="Run1", latent_dim=100):
     #folds
     group_kfold = GroupKFold(n_splits=n_folds)
     folds = group_kfold.split(dataset, targets, subject_idx)
@@ -75,13 +75,12 @@ def run_cv(dataset, targets, subject_idx, n_folds, name, latent_dim):
         val_targets = targets[val_idx]
         #model instantiation
         # create the discriminator models
-        d_model, c_model = define_discriminator()
+        d_model, c_model = define_discriminator(lr=lr)
         # create the generator
         g_model = define_generator(latent_dim)
-        n_gen_trainable = len(g_model.trainable_weights)
         # create the gan
-        gan_model = define_gan(g_model, d_model)
+        gan_model = define_gan(g_model, d_model, lr=lr)
         # train models
-        c_model_trained, d_model_trained, g_model_trained = train(fold, dir_name, g_model, d_model, c_model, gan_model, train_dataset, train_targets, val_dataset, val_targets, latent_dim, n_epochs=100, n_batch=100)
+        c_model_trained, d_model_trained, g_model_trained = train(fold, dir_name, g_model, d_model, c_model, gan_model, train_dataset, train_targets, val_dataset, val_targets, latent_dim, n_epochs=n_epochs, n_batch=n_batch)
         fold+=1
     return(c_model_trained, d_model_trained, g_model_trained, dir_name)
