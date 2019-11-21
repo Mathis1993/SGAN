@@ -1,10 +1,10 @@
 #TF-GPU IMPORTS
 from utils.results import save_csv
 from utils.models import save_model
-from utils.plotting import plot_val_train_loss, plot_acc
+from utils.plotting import plot_val_train_loss, plot_acc, generate_images
 
 
-def evaluate_performance(fold, path, metric, prev_metric, epoch_list, c_losses_train , c_losses_val, metrics, c_model, d_model, g_model):
+def evaluate_performance(fold, path, metric, prev_metric, epoch_list, c_losses_train , c_losses_val, metrics, c_model, d_model, g_model, dataset, latent_dim):
     path_res_dir = path
     path_sub_dir = path + "/" + "fold_{}".format(fold)
     #save to csv (overwrite every epoch, so that if the script breaks down during training, the results up to that
@@ -22,22 +22,5 @@ def evaluate_performance(fold, path, metric, prev_metric, epoch_list, c_losses_t
         prev_metric = metric
     plot_val_train_loss(c_losses_train, c_losses_val, fold, path_sub_dir)
     plot_acc(metrics, fold, path_sub_dir)
+    generate_images(g_model, path_sub_dir, fold, dataset, latent_dim)
     return(prev_metric)
-
-    #ToDo: Create fake images and save them for viusal inspection
-	# prepare fake examples
-	# X, _ = generate_fake_samples(g_model, latent_dim, n_samples)
-	# # ToDo: rescale from [-1,1] to former range
-	# X = (X + 1) / 2.0
-	# # plot images
-	# for i in range(100):
-	# 	# define subplot
-	# 	pyplot.subplot(10, 10, 1 + i)
-	# 	# turn off axis
-	# 	pyplot.axis('off')
-	# 	# plot raw pixel data
-	# 	pyplot.imshow(X[i, :, :, 0], cmap='gray_r')
-	# # save plot to file
-	# filename1 = 'generated_plot_%04d.png' % (step+1)
-	# pyplot.savefig(filename1)
-	# pyplot.close()

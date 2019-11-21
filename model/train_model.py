@@ -54,7 +54,7 @@ def train(fold, res_dir, g_model, d_model, c_model, gan_model, train_dataset, tr
         metrics.append(metric)
         #evaluate performance
         path = res_dir
-        prev_metric = evaluate_performance(fold, path, metric, prev_metric, epoch_list, c_losses_train , c_losses_val, metrics, c_model, d_model, g_model)
+        prev_metric = evaluate_performance(fold, path, metric, prev_metric, epoch_list, c_losses_train , c_losses_val, metrics, c_model, d_model, g_model, train_dataset, latent_dim)
     return c_model, d_model, g_model
 
 

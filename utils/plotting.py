@@ -1,4 +1,6 @@
 from matplotlib import pyplot as plt
+import numpy as np
+from model.create_model import generate_fake_samples
 
 
 def plot_val_train_loss(train_losses, val_losses, fold, path):
@@ -30,7 +32,7 @@ def plot_val_train_loss(train_losses, val_losses, fold, path):
     fig.savefig(path + "/" + name, bbox_inches='tight')
     plt.close()
 
-#ToDo: Why does this throw an error?!
+
 def plot_acc(metric, fold, path):
     # turn interactive mode off, because plot cannot be displayed in console
     plt.ioff()
@@ -51,3 +53,21 @@ def plot_acc(metric, fold, path):
     name = "val_metric_fold_{}.png".format(fold)
     fig.savefig(path + "/" + name, bbox_inches='tight')
     plt.close()
+
+
+def generate_images(g_model, path, fold, dataset, latent_dim):
+    # prepare fake examples (if changing n_samples, also change specifications of subplot)
+    n_samples = 9
+    X, _ = generate_fake_samples(g_model, latent_dim=latent_dim, n_samples=n_samples)
+    range_mean = (np.min(dataset) + np.max(dataset)) / 2
+    #go from [-1,1] to original range again --> reverse process
+    X = (X * range_mean) + range_mean
+    # # plot images
+    for i in range(n_samples):
+        plt.subplot(3, 3, 1 + i)
+        plt.axis("off")
+        plt.imshow(X[i, :, :, 0])
+    filename1 = path + "/" + "generated_images_{}".format(fold)
+    plt.savefig(filename1)
+    plt.close()
+

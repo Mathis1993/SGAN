@@ -52,9 +52,9 @@ dataset = (dataset - ((np.min(dataset) + np.max(dataset)) / 2)) / ((np.min(datas
 
 #ToDo: Delete later, only for testing
 #select only small amount of samples
-# dataset = dataset[:200]
-# targets = targets[:200]
-# subject_idx = subject_idx[:200]
+dataset = dataset[:200]
+targets = targets[:200]
+subject_idx = subject_idx[:200]
 
 
 ###############
@@ -88,7 +88,7 @@ n_batch = 100
 ######################
 
 #train the model using cross validation
-c_model_trained, d_model_trained, g_model_trained, res_dir = run_cv(dataset, targets, subject_idx, n_folds, lr=lr, n_batch=n_batch, n_epochs=n_epochs, name=name, latent_dim=latent_dim)
+c_model_trained, d_model_trained, g_model_trained, res_dir = run_cv(dataset_cv, targets_cv, subject_idx_cv, n_folds, lr=lr, n_batch=n_batch, n_epochs=n_epochs, name=name, latent_dim=latent_dim)
 
 
 ############################
