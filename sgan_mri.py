@@ -60,8 +60,6 @@ dataset = (dataset - ((np.min(dataset) + np.max(dataset)) / 2)) / ((np.min(datas
 ###############
 ###TEST DATA###
 ###############
-#ToDo: Try out whole script with a small number of examples: Does the syntax work without throwing errors?
-#ToDo: Code for starting tmux session?
 
 #Amount of data held back
 test = 0.1
