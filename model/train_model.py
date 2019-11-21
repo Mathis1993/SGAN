@@ -1,24 +1,10 @@
-#TF-GPU IMPORTS
-# from numpy import expand_dims, zeros, ones, asarray
-# from numpy.random import randn, randint
-# from tensorflow import keras
-# from tensorflow.keras.optimizers import Adam
-# from tensorflow.keras.models import Model
-# from tensorflow.keras.layers import Input, Dense, Reshape, Flatten, Conv2D, Conv2DTranspose, LeakyReLU, Dropout
-# from matplotlib import pyplot
-# from utils.mk_result_dir import mk_result_dir
-# from utils.save_model import save_model
-# import csv
-# from utils.save_csv import save_csv
-# from utils.plotting import plot_val_train_loss, plot_acc
-
-#TF-CPU IMPORTS
 from numpy import ones
 from utils.results import mk_result_dir
 from model.create_model import select_samples, generate_fake_samples, generate_latent_points, define_discriminator, define_gan, define_generator
 from model.evaluate_model import evaluate_performance
 from sklearn.model_selection import GroupKFold
 import numpy as np
+
 
 def train(fold, res_dir, g_model, d_model, c_model, gan_model, train_dataset, train_targets, val_dataset, val_targets, latent_dim, n_epochs=20, n_batch=100):
     # select supervised dataset
@@ -70,6 +56,7 @@ def train(fold, res_dir, g_model, d_model, c_model, gan_model, train_dataset, tr
         path = res_dir
         prev_metric = evaluate_performance(fold, path, metric, prev_metric, epoch_list, c_losses_train , c_losses_val, metrics, c_model, d_model, g_model)
     return c_model, d_model, g_model
+
 
 def run_cv(dataset, targets, subject_idx, n_folds, name, latent_dim):
     #folds

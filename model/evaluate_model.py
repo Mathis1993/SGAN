@@ -1,18 +1,4 @@
 #TF-GPU IMPORTS
-# from numpy import expand_dims, zeros, ones, asarray
-# from numpy.random import randn, randint
-# from tensorflow import keras
-# from tensorflow.keras.optimizers import Adam
-# from tensorflow.keras.models import Model
-# from tensorflow.keras.layers import Input, Dense, Reshape, Flatten, Conv2D, Conv2DTranspose, LeakyReLU, Dropout
-# from matplotlib import pyplot
-# from utils.mk_result_dir import mk_result_dir
-# from utils.save_model import save_model
-# import csv
-# from utils.save_csv import save_csv
-# from utils.plotting import plot_val_train_loss, plot_acc
-
-#TF-CPU IMPORTS
 from utils.results import save_csv
 from utils.models import save_model
 from utils.plotting import plot_val_train_loss, plot_acc
