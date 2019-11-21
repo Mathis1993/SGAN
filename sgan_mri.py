@@ -1,14 +1,15 @@
-#ToDo: Uncomment later
-# import os
-# os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID" # see issue #152
-# #only use gpu with index 1
-# os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+#Select GPU
+import os
+os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID" # see issue #152
+#only use gpu with index 1
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 import numpy as np
 from skimage.transform import resize
 from utils.manipulation import split_data, shuffle_data
 from model.train_model import run_cv
 from utils.models import mean_model, best_model
+
 
 ###############
 ###LOAD DATA###
