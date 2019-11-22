@@ -20,7 +20,7 @@ def split_data(test_amount, dataset, targets, subject_idx):
     number_subjects = np.unique(subject_idx).shape[0]
     test_subjects = int(test_amount*number_subjects)
 
-    #take slices from the first x subjects, corresping to an amount of data == test (eg 0.1)
+    #take slices from the first x subjects, corresponding to an amount of data == test (eg 0.1)
     subject_idx_test = list()
     for i in range(test_subjects):
         idx = np.argwhere(subject_idx == i)
