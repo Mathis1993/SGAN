@@ -4,7 +4,7 @@ from utils.models import save_model
 from utils.plotting import plot_val_train_loss, plot_acc, generate_images
 
 
-def evaluate_performance(fold, path, metric, prev_metric, epoch_list, c_losses_train , c_losses_val, metrics, c_model, d_model, g_model, dataset, latent_dim):
+def evaluate_performance(fold, path, metric, prev_metric, epoch_list, c_losses_train , c_losses_val, metrics, c_model, d_model, g_model, dataset, latent_dim, range_mean):
     path_res_dir = path
     path_sub_dir = path + "/" + "fold_{}".format(fold)
     #save to csv (overwrite every epoch, so that if the script breaks down during training, the results up to that
@@ -22,5 +22,5 @@ def evaluate_performance(fold, path, metric, prev_metric, epoch_list, c_losses_t
         prev_metric = metric
     plot_val_train_loss(c_losses_train, c_losses_val, fold, path_sub_dir)
     plot_acc(metrics, fold, path_sub_dir)
-    generate_images(g_model, path_sub_dir, fold, dataset, latent_dim)
+    generate_images(g_model, path_sub_dir, fold, dataset, latent_dim, range_mean)
     return(prev_metric)

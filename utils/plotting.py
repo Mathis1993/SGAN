@@ -55,7 +55,7 @@ def plot_acc(metric, fold, path):
     plt.close()
 
 
-def generate_images(g_model, path, fold, dataset, latent_dim):
+def generate_images(g_model, path, fold, dataset, latent_dim, range_mean):
     # prepare fake examples (if changing n_samples, also change specifications of subplot)
     n_samples = 9
     X, _ = generate_fake_samples(g_model, latent_dim=latent_dim, n_samples=n_samples)

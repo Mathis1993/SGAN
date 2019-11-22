@@ -5,8 +5,7 @@ from model.evaluate_model import evaluate_performance
 from sklearn.model_selection import GroupKFold
 import numpy as np
 
-
-def train(fold, res_dir, g_model, d_model, c_model, gan_model, train_dataset, train_targets, val_dataset, val_targets, latent_dim, n_epochs=20, n_batch=100):
+def train(fold, res_dir, g_model, d_model, c_model, gan_model, train_dataset, train_targets, val_dataset, val_targets, latent_dim, range_mean, n_epochs=20, n_batch=100):
     # select supervised dataset
     X_sup, y_sup, ix_sup = select_samples(train_dataset, train_targets, n_samples=n_batch)
     print("Supvervised Samples' Shape: {}, Supervised Targets' Shape: {}".format(X_sup.shape, y_sup.shape))
@@ -54,11 +53,11 @@ def train(fold, res_dir, g_model, d_model, c_model, gan_model, train_dataset, tr
         metrics.append(metric)
         #evaluate performance
         path = res_dir
-        prev_metric = evaluate_performance(fold, path, metric, prev_metric, epoch_list, c_losses_train , c_losses_val, metrics, c_model, d_model, g_model, train_dataset, latent_dim)
+        prev_metric = evaluate_performance(fold, path, metric, prev_metric, epoch_list, c_losses_train , c_losses_val, metrics, c_model, d_model, g_model, train_dataset, latent_dim, range_mean)
     return c_model, d_model, g_model
 
 
-def run_cv(dataset, targets, subject_idx, n_folds, lr=0.0002, n_batch=100, n_epochs=100, name="Run1", latent_dim=100):
+def run_cv(dataset, targets, subject_idx, n_folds, range_mean,  lr=0.0002, n_batch=100, n_epochs=100, name="Run1", latent_dim=100):
     #folds
     group_kfold = GroupKFold(n_splits=n_folds)
     folds = group_kfold.split(dataset, targets, subject_idx)
@@ -81,6 +80,6 @@ def run_cv(dataset, targets, subject_idx, n_folds, lr=0.0002, n_batch=100, n_epo
         # create the gan
         gan_model = define_gan(g_model, d_model, lr=lr)
         # train models
-        c_model_trained, d_model_trained, g_model_trained = train(fold, dir_name, g_model, d_model, c_model, gan_model, train_dataset, train_targets, val_dataset, val_targets, latent_dim, n_epochs=n_epochs, n_batch=n_batch)
+        c_model_trained, d_model_trained, g_model_trained = train(fold, dir_name, g_model, d_model, c_model, gan_model, train_dataset, train_targets, val_dataset, val_targets, latent_dim, range_mean, n_epochs=n_epochs, n_batch=n_batch)
         fold+=1
     return(c_model_trained, d_model_trained, g_model_trained, dir_name)
