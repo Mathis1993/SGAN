@@ -3,7 +3,7 @@ import numpy as np
 from model.create_model import generate_fake_samples
 
 
-def plot_val_train_loss(train_losses, val_losses, fold, path):
+def plot_val_train_loss(train_losses, val_losses, fold, path, name="train_val_loss"):
 
     #turn interactive mode off, because plot cannot be displayed in console
     plt.ioff()
@@ -28,12 +28,12 @@ def plot_val_train_loss(train_losses, val_losses, fold, path):
     plt.title("Training and Validation Loss per Epoch", fontsize=20)
     plt.tight_layout()
     #plt.show() #no showing, only saving
-    name = "train_val_loss_fold_{}.png".format(fold)
+    name = name + "_fold_{}.png".format(fold)
     fig.savefig(path + "/" + name, bbox_inches='tight')
     plt.close()
 
 
-def plot_acc(metric, fold, path):
+def plot_acc(metric, metric_b, fold, path):
     # turn interactive mode off, because plot cannot be displayed in console
     plt.ioff()
 
@@ -42,6 +42,7 @@ def plot_acc(metric, fold, path):
 
     fig = plt.figure(figsize=(10, 8))
     plt.plot(range(1, len(metric) + 1), metric, label='Validation Metric')
+    plt.plot(range(1, len(metric_b) + 1), metric_b, label='Validation Metric Baseline')
     plt.xlabel('epochs')
     plt.ylabel('acc')
     plt.xlim(0, len(metric) + 1)  # consistent scale

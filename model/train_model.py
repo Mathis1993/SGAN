@@ -28,6 +28,7 @@ def train(fold, res_dir, g_model, d_model, c_model, gan_model, b_model, train_da
     prev_metric = 0.0
     c_losses_train = list()
     c_losses_val = list()
+    b_losses_train = list()
     b_losses_val = list()
     metrics = list()
     metrics_b = list()
@@ -36,7 +37,7 @@ def train(fold, res_dir, g_model, d_model, c_model, gan_model, b_model, train_da
         epoch_list.append(j)
         for i in range(bat_per_epo):
             #randomly select half of the supervised samples (just reuse select_supervised_samples with n_samples=50, sampling from the 100 supervised ones)
-            X_sup_real, y_sup_real, _ = select_samples(X_sup, y_sup, n_samples=half_batch)
+            X_sup_real, y_sup_real, _ = select_samples(X_sup, y_sup, n_samples=n_batch)
             #update supervised discriminator (c)
             c_loss, c_metric = c_model.train_on_batch(X_sup_real, y_sup_real)
             #randomly select real (unsupervised) samples
@@ -64,12 +65,14 @@ def train(fold, res_dir, g_model, d_model, c_model, gan_model, b_model, train_da
         c_loss_val, metric = c_model.evaluate(val_dataset, val_targets, verbose=0)
         c_losses_val.append(c_loss_val)
         metrics.append(metric)
-        b_loss_val, metric_b = b_model.evluate(val_dataset, val_targets, verbose=0)
+        b_losses_train.append(b_loss)
+        b_loss_val, metric_b = b_model.evaluate(val_dataset, val_targets, verbose=0)
         b_losses_val.append(b_loss_val)
-        metrics_b.append(b_metric)
+        metrics_b.append(metric_b)
+        print("model mae: [{:.3f}], baseline model mae: [{:.3f}]".format(metric, metric_b))
         #evaluate performance
         path = res_dir
-        prev_metric = evaluate_performance(fold, path, metric, prev_metric, epoch_list, c_losses_train , c_losses_val, metrics, c_model, d_model, g_model, train_dataset, latent_dim, range_mean)
+        prev_metric = evaluate_performance(fold, path, metric, prev_metric, epoch_list, c_losses_train , c_losses_val, metrics, c_model, d_model, g_model, train_dataset, latent_dim, range_mean, b_losses_train, b_losses_val, metrics_b)
     return c_model, d_model, g_model
 
 
