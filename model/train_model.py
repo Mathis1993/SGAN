@@ -1,13 +1,19 @@
 from numpy import ones
 from utils.results import mk_result_dir
+from utils.manipulation import split_data
 from model.create_model import select_samples, generate_fake_samples, generate_latent_points, define_discriminator, define_gan, define_generator
 from model.evaluate_model import evaluate_performance
 from sklearn.model_selection import GroupKFold
 import numpy as np
 
-def train(fold, res_dir, g_model, d_model, c_model, gan_model, train_dataset, train_targets, val_dataset, val_targets, latent_dim, range_mean, n_epochs=20, n_batch=100):
+def train(fold, res_dir, g_model, d_model, c_model, gan_model, train_dataset, train_targets, train_subject_idx, val_dataset, val_targets, latent_dim, range_mean, n_epochs=20, n_batch=100):
     # select supervised dataset
-    X_sup, y_sup, ix_sup = select_samples(train_dataset, train_targets, n_samples=n_batch)
+    #X_sup, y_sup, ix_sup = select_samples(train_dataset, train_targets, n_samples=n_batch)
+    # use whole persons for the supervised data set --> just utilize the split function!
+    sup_amount = 0.1 #ca. 77 persons (when 10% are already gone for being the final test set and another 10% for the validation data in this fold)
+    print(train_dataset.shape)
+    print(train_targets.shape)
+    dataset_real, targets_real, idx_real, X_sup, y_sup = split_data(sup_amount, train_dataset, train_targets, train_subject_idx)
     print("Supvervised Samples' Shape: {}, Supervised Targets' Shape: {}".format(X_sup.shape, y_sup.shape))
     # calculate the number of batches per training epoch
     bat_per_epo = int(train_dataset.shape[0] / n_batch) #round up?
@@ -16,7 +22,7 @@ def train(fold, res_dir, g_model, d_model, c_model, gan_model, train_dataset, tr
     # calculate the size of half a batch of samples
     half_batch = int(n_batch / 2)
     #dataset to draw real samples (unlabeled) from, excluding the indices of the supervised sample
-    dataset_real = np.delete(train_dataset, (ix_sup), axis=0)
+    #dataset_real = np.delete(train_dataset, (ix_sup), axis=0) #done via split-function
     print('fold=%d, n_epochs=%d, n_batch=%d, 1/2=%d, b/e=%d, steps=%d' % (fold + 1, n_epochs, n_batch, half_batch, bat_per_epo, n_steps))
     # manually enumerate epochs
     prev_metric = 0.0
@@ -70,8 +76,10 @@ def run_cv(dataset, targets, subject_idx, n_folds, range_mean,  lr=0.0002, n_bat
         #select current data
         train_dataset = dataset[train_idx]
         train_targets = targets[train_idx]
+        train_subject_idx = subject_idx[train_idx]
         val_dataset = dataset[val_idx]
         val_targets = targets[val_idx]
+        val_subject_idx = subject_idx[val_idx]
         #model instantiation
         # create the discriminator models
         d_model, c_model = define_discriminator(lr=lr)
@@ -80,6 +88,6 @@ def run_cv(dataset, targets, subject_idx, n_folds, range_mean,  lr=0.0002, n_bat
         # create the gan
         gan_model = define_gan(g_model, d_model, lr=lr)
         # train models
-        c_model_trained, d_model_trained, g_model_trained = train(fold, dir_name, g_model, d_model, c_model, gan_model, train_dataset, train_targets, val_dataset, val_targets, latent_dim, range_mean, n_epochs=n_epochs, n_batch=n_batch)
+        c_model_trained, d_model_trained, g_model_trained = train(fold, dir_name, g_model, d_model, c_model, gan_model, train_dataset, train_targets, train_subject_idx, val_dataset, val_targets, latent_dim, range_mean, n_epochs=n_epochs, n_batch=n_batch)
         fold+=1
     return(c_model_trained, d_model_trained, g_model_trained, dir_name)

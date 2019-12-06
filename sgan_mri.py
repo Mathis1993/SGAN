@@ -62,11 +62,15 @@ dataset = (dataset - range_mean) / range_mean
 ###TEST DATA###
 ###############
 
+print(dataset.shape)
+print(targets.shape)
 #Amount of data held back
 test = 0.1
 dataset_cv, targets_cv, subject_idx_cv, dataset_test, targets_test = split_data(test, dataset, targets, subject_idx)
-print(np.min(dataset_cv))
-print(np.max(dataset_cv))
+print(dataset_cv.shape)
+print(targets_cv.shape)
+print(dataset_test.shape)
+print(targets_test.shape)
 
 ################
 ###PARAMETERS###

@@ -1,5 +1,5 @@
 import numpy as np
-
+import pandas as pd
 
 def shuffle_data(imgs, targets, subject_idx):
     #get indices in shuffled form
@@ -19,11 +19,14 @@ def split_data(test_amount, dataset, targets, subject_idx):
     #amount of subjects
     number_subjects = np.unique(subject_idx).shape[0]
     test_subjects = int(test_amount*number_subjects)
+    #take the first n==test_subjects unique indices
+    #pandas' unique is faster than nps' unique and doesn't sort the output
+    unique_idx = pd.unique(subject_idx)[:test_subjects]
 
-    #take slices from the first x subjects, corresponding to an amount of data == test (eg 0.1)
+    #take slices from the first n unique subjects, corresponding to an amount of data == test (eg 0.1)
     subject_idx_test = list()
     for i in range(test_subjects):
-        idx = np.argwhere(subject_idx == i)
+        idx = np.argwhere(subject_idx == unique_idx[i])
         subject_idx_test.append(idx)
     #collapse into one array
     subject_idx_test = np.concatenate(subject_idx_test, axis=0)
