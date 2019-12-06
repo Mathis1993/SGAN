@@ -3,10 +3,10 @@ import pandas as pd
 
 def shuffle_data(imgs, targets, subject_idx):
     #get indices in shuffled form
-    random_idx = np.array([x for x in range(imgs.shape[-1])])
+    random_idx = np.array([x for x in range(imgs.shape[0])])
     np.random.shuffle(random_idx)
     #shuffle order of sliced images and subject indices in the same way
-    imgs = imgs[:,:,random_idx]
+    imgs = imgs[random_idx, :, :]
     subject_idx = subject_idx[random_idx]
     targets = targets[random_idx]
     return(imgs, targets, subject_idx)
@@ -36,6 +36,9 @@ def split_data(test_amount, dataset, targets, subject_idx):
     #select test data
     dataset_test = dataset[subject_idx_test]
     targets_test = targets[subject_idx_test]
+
+    #shuffle test data
+    dataset_test, targets_test, subject_idx_test = shuffle_data(dataset_test, targets_test, subject_idx_test)
 
     #omit test indices from the rest of the data used for cross validation
     dataset_cv = np.delete(dataset, subject_idx_test, axis=0)

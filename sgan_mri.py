@@ -25,12 +25,6 @@ targets = np.load("data_mri/targets.npy")
 
 imgs_resized = resize(imgs, (64,64))
 
-##################
-###SHUFFLE DATA###
-##################
-
-imgs_resized, targets, subject_idx = shuffle_data(imgs_resized, targets, subject_idx)
-
 
 ###########################
 ###ASSERT CORRECT SHAPES###
@@ -41,6 +35,13 @@ dataset = np.swapaxes(imgs_resized, 0, 2)
 #also, reshape to (samples, pixels, pixels, 1) (expected by models)
 dataset = dataset.reshape(dataset.shape[0], dataset.shape[1], dataset.shape[2], 1)
 targets = targets.reshape(targets.shape[0], 1)
+
+
+##################
+###SHUFFLE DATA###
+##################
+
+dataset, targets, subject_idx = shuffle_data(dataset, targets, subject_idx)
 
 
 ############################
