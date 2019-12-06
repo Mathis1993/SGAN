@@ -1,12 +1,12 @@
 from numpy import ones
 from utils.results import mk_result_dir
 from utils.manipulation import split_data
-from model.create_model import select_samples, generate_fake_samples, generate_latent_points, define_discriminator, define_gan, define_generator
+from model.create_model import select_samples, generate_fake_samples, generate_latent_points, define_discriminator, define_gan, define_generator, define_baseline
 from model.evaluate_model import evaluate_performance
 from sklearn.model_selection import GroupKFold
 import numpy as np
 
-def train(fold, res_dir, g_model, d_model, c_model, gan_model, train_dataset, train_targets, train_subject_idx, val_dataset, val_targets, latent_dim, range_mean, n_epochs=20, n_batch=100):
+def train(fold, res_dir, g_model, d_model, c_model, gan_model, b_model, train_dataset, train_targets, train_subject_idx, val_dataset, val_targets, latent_dim, range_mean, n_epochs=20, n_batch=100):
     # select supervised dataset
     #X_sup, y_sup, ix_sup = select_samples(train_dataset, train_targets, n_samples=n_batch)
     # use whole persons for the supervised data set --> just utilize the split function!
@@ -28,7 +28,9 @@ def train(fold, res_dir, g_model, d_model, c_model, gan_model, train_dataset, tr
     prev_metric = 0.0
     c_losses_train = list()
     c_losses_val = list()
+    b_losses_val = list()
     metrics = list()
+    metrics_b = list()
     epoch_list = list()
     for j in range(n_epochs):
         epoch_list.append(j)
@@ -50,13 +52,21 @@ def train(fold, res_dir, g_model, d_model, c_model, gan_model, train_dataset, tr
             # Here, fake images are labeled as real!
             X_gan, y_gan = generate_latent_points(latent_dim, n_batch), ones((n_batch, 1))
             g_loss = gan_model.train_on_batch(X_gan, y_gan)
+            #update baseline_model
+            #X_sup_b, y_sup_b, _ = select_samples(X_sup, y_sup, n_samples=n_batch)
+            b_loss, b_metric = b_model.train_on_batch(X_sup, y_sup)
+            #b_loss = 0
+            #b_metric = 0
             # summarize loss on this batch
-            print('-->fold %d, epoch %d, batch %d/%d, c[%.3f, %.3f], d[%.3f, %.3f], g[%.3f]' % (fold + 1, j + 1, i + 1, bat_per_epo, c_loss, c_metric, d_loss1, d_loss2, g_loss))
+            print('-->fold %d, epoch %d, batch %d/%d, c[%.3f, %.3f], d[%.3f, %.3f], g[%.3f], b[%.3f, %.3f]' % (fold + 1, j + 1, i + 1, bat_per_epo, c_loss, c_metric, d_loss1, d_loss2, g_loss, b_loss, b_metric))
         #after each epoch: save current losses and val metric
         c_losses_train.append(c_loss)
         c_loss_val, metric = c_model.evaluate(val_dataset, val_targets, verbose=0)
         c_losses_val.append(c_loss_val)
         metrics.append(metric)
+        b_loss_val, metric_b = b_model.evluate(val_dataset, val_targets, verbose=0)
+        b_losses_val.append(b_loss_val)
+        metrics_b.append(b_metric)
         #evaluate performance
         path = res_dir
         prev_metric = evaluate_performance(fold, path, metric, prev_metric, epoch_list, c_losses_train , c_losses_val, metrics, c_model, d_model, g_model, train_dataset, latent_dim, range_mean)
@@ -87,7 +97,9 @@ def run_cv(dataset, targets, subject_idx, n_folds, range_mean,  lr=0.0002, n_bat
         g_model = define_generator(latent_dim)
         # create the gan
         gan_model = define_gan(g_model, d_model, lr=lr)
+        #create the baseline
+        b_model = define_baseline(lr=lr)
         # train models
-        c_model_trained, d_model_trained, g_model_trained = train(fold, dir_name, g_model, d_model, c_model, gan_model, train_dataset, train_targets, train_subject_idx, val_dataset, val_targets, latent_dim, range_mean, n_epochs=n_epochs, n_batch=n_batch)
+        c_model_trained, d_model_trained, g_model_trained = train(fold, dir_name, g_model, d_model, c_model, gan_model, b_model, train_dataset, train_targets, train_subject_idx, val_dataset, val_targets, latent_dim, range_mean, n_epochs=n_epochs, n_batch=n_batch)
         fold+=1
     return(c_model_trained, d_model_trained, g_model_trained, dir_name)
