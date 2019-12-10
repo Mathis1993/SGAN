@@ -10,7 +10,7 @@ def train(fold, res_dir, g_model, d_model, c_model, gan_model, b_model, train_da
     # select supervised dataset
     #X_sup, y_sup, ix_sup = select_samples(train_dataset, train_targets, n_samples=n_batch)
     # use whole persons for the supervised data set --> just utilize the split function!
-    sup_amount = 0.1 #ca. 77 persons (when 10% are already gone for being the final test set and another 10% for the validation data in this fold)
+    sup_amount = 0.2 #ca. 77 persons (when 10% are already gone for being the final test set and another 10% for the validation data in this fold)
     print(train_dataset.shape)
     print(train_targets.shape)
     dataset_real, targets_real, idx_real, X_sup, y_sup = split_data(sup_amount, train_dataset, train_targets, train_subject_idx)

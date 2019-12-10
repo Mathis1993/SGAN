@@ -83,10 +83,10 @@ name = "Test1"
 #number of folds
 n_folds = 10
 #number of epochs
-n_epochs = 100
+n_epochs = 500
 #learning rate
 lr = 0.0002
-#batch size: This also determines the amount of labeled data
+#batch size: This also determines the amount of labeled data (it doesn't anymore, does it?)
 n_batch = 100
 
 
