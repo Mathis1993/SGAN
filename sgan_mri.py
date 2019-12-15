@@ -1,12 +1,20 @@
-#Select GPU
+################
+###Select GPU###
+################
+
 import os
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID" # see issue #152
 #only use gpu with index 1
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
+
+#############
+###Imports###
+#############
+
 import numpy as np
 from skimage.transform import resize
-from utils.manipulation import split_data, shuffle_data
+from utils.manipulation import split_data, shuffle_data, normalize
 from model.train_model import run_cv
 from utils.models import mean_model, best_model
 
@@ -48,15 +56,7 @@ dataset, targets, subject_idx = shuffle_data(dataset, targets, subject_idx)
 ###NOMRALIZE PIXEL VALUES###
 ############################
 
-#gan will generate images with values from -1 to 1, so adjust mri images accordingly
-range_mean = (np.max(dataset) - np.min(dataset)) / 2
-dataset = (dataset - range_mean) / range_mean
-
-#ToDo: Delete later, only for testing
-#select only small amount of samples
-#dataset = dataset[:200]
-#targets = targets[:200]
-#subject_idx = subject_idx[:200]
+dataset = normalize(dataset, feature_range=(-1,1))
 
 
 ###############
@@ -95,7 +95,7 @@ n_batch = 100
 ######################
 
 #train the model using cross validation
-c_model_trained, d_model_trained, g_model_trained, res_dir = run_cv(dataset_cv, targets_cv, subject_idx_cv, n_folds, range_mean, lr=lr, n_batch=n_batch, n_epochs=n_epochs, name=name, latent_dim=latent_dim)
+c_model_trained, d_model_trained, g_model_trained, b_model_trained, res_dir = run_cv(dataset_cv, targets_cv, subject_idx_cv, n_folds, lr=lr, n_batch=n_batch, n_epochs=n_epochs, name=name, latent_dim=latent_dim)
 
 
 ############################
@@ -107,5 +107,3 @@ mean_model(res_dir, dataset_test, targets_test)
 
 #Evaluate best model from folds on test data
 best_model(res_dir, dataset_test, targets_test)
-
-#ToDo: Test against other models (c_model without gan-structure and best brain age model (svr?))

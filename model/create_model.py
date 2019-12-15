@@ -128,3 +128,26 @@ def generate_fake_samples(generator, latent_dim, n_samples):
 	# create class labels
 	y = zeros((n_samples, 1))
 	return images, y
+
+#baseline model only training on supervised subsample
+def define_baseline(lr, in_shape=(64,64,1)):
+    # image input
+    in_image = Input(shape=in_shape)
+    # downsample
+    fe = Conv2D(128, (3,3), strides=(2,2), padding='same')(in_image)
+    fe = LeakyReLU(alpha=0.2)(fe)
+    # downsample
+    fe = Conv2D(128, (3,3), strides=(2,2), padding='same')(fe)
+    fe = LeakyReLU(alpha=0.2)(fe)
+    # downsample
+    fe = Conv2D(128, (3,3), strides=(2,2), padding='same')(fe)
+    fe = LeakyReLU(alpha=0.2)(fe)
+    # flatten feature maps
+    fe = Flatten()(fe)
+    # dropout
+    fe = Dropout(0.4)(fe)
+    b_out_layer = Dense(1, activation='linear')(fe)
+    # define and compile supervised discriminator model
+    b_model = Model(in_image, b_out_layer)
+    b_model.compile(loss='mean_squared_error', optimizer=Adam(lr=lr, beta_1=0.5), metrics=['mae'])
+    return b_model

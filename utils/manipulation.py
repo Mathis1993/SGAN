@@ -1,12 +1,13 @@
 import numpy as np
 import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
 
 def shuffle_data(imgs, targets, subject_idx):
     #get indices in shuffled form
     random_idx = np.array([x for x in range(imgs.shape[0])])
     np.random.shuffle(random_idx)
     #shuffle order of sliced images and subject indices in the same way
-    imgs = imgs[random_idx, :, :]
+    imgs = imgs[random_idx]
     subject_idx = subject_idx[random_idx]
     targets = targets[random_idx]
     return(imgs, targets, subject_idx)
@@ -46,3 +47,13 @@ def split_data(test_amount, dataset, targets, subject_idx):
     subject_idx_cv = np.delete(subject_idx, subject_idx_test, axis=0)
 
     return(dataset_cv, targets_cv, subject_idx_cv, dataset_test, targets_test)
+
+
+def normalize(dataset, feature_range=(0,1)):
+    scaler = MinMaxScaler(feature_range=feature_range)
+    # minmaxscaler expects form of (n_samples, n_features)
+    ascolumns = dataset.reshape(dataset.shape[0], dataset.shape[1] * dataset.shape[2])
+    # fit and transform in one step
+    t = scaler.fit_transform(ascolumns)
+    dataset = t.reshape(dataset.shape)
+    return dataset

@@ -34,5 +34,5 @@ def best_model(res_dir, dataset_test, targets_test):
     return best_model
 
 
-def save_model(model, path, filename):
-   model.save(path + "/" +  filename)
+def save_model(model, path, prefix, fold):
+   model.save(path + "/" + '{}_model_fold_{}.h5'.format(prefix, fold))
