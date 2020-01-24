@@ -108,8 +108,8 @@ def train(fold, res_dir, g_model, d_model, c_model, gan_model, b_model, train_da
             d_loss_real, d_loss_fake, g_loss))
 
             if i % 300 == 0:
-                _, c_test_acc = c_model.evaluate(dataset_real, targets_real)
-                _, b_test_acc = b_model.evaluate(dataset_real, targets_real)
+                _, c_test_acc = c_model.evaluate(dataset_real, targets_real, verbose=0)
+                _, b_test_acc = b_model.evaluate(dataset_real, targets_real, verbose=0)
                 print("acc C: {:.3f} / acc B: {:.3f}".format(c_test_acc, b_test_acc))
 
         ##After each epoch
