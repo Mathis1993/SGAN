@@ -70,7 +70,7 @@ def train(fold, res_dir, g_model, d_model, c_model, gan_model, b_model, train_da
     c_metrics_val = list()
     b_losses_val = list()
     b_metrics_val = list()
-    best_metric_val = float("inf")
+    best_metric_val = float("-inf")
     path_sub_dir = res_dir + "/" + "fold_{}".format(fold)
 
     #Manually enumerate epochs

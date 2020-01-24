@@ -17,7 +17,7 @@ def evaluate_performance(epochs_list, fold, res_dir, c_losses_train, c_losses_va
     #decide if validation metric approved and if to save models
     c_metric_val = c_metrics_val[-1]
     b_metric_val = b_metrics_val[-1]
-    if c_metric_val < best_metric_val:
+    if c_metric_val > best_metric_val:
         print("C Validation metric improved from [{:.3f}] to [{:.3f}]. Saving models...".format(best_metric_val,
                                                                                                 c_metric_val))
         save_csv(res_dir, "best_val_metrics", mode="a", fold=[fold], c_best_val=[c_metric_val], b_val=[b_metric_val])
